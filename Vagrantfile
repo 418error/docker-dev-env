@@ -1,6 +1,17 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+[
+  {:name => "vagrant-cachier", :version => "1.2.1"},
+  {:name => "vagrant-git", :version => "0.1.7"},
+  {:name => "vagrant-docker-compose", :version => "1.0.0"}
+].each do |plugin|
+  if not Vagrant.has_plugin?(plugin[:name], plugin[:version])
+    raise "#{plugin[:name]} #{plugin[:version]} is required. Please run `vagrant plugin install #{plugin[:name]}`"
+  end
+end
+
+
 Vagrant.configure(2) do |config|
   config.vm.box              = "centos/7"
   config.vm.box_version      = "1603.01"
