@@ -1,16 +1,31 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-[
-  {:name => "vagrant-cachier", :version => "1.2.1"},
-  {:name => "vagrant-git", :version => "0.1.7"},
-  {:name => "vagrant-docker-compose", :version => "1.0.0"}
-].each do |plugin|
-  if not Vagrant.has_plugin?(plugin[:name], plugin[:version])
-    raise "#{plugin[:name]} #{plugin[:version]} is required. Please run `vagrant plugin install #{plugin[:name]}`"
+# Install vagrant plugin
+#
+# @param: plugin type: Array[String] desc: The desired plugin to install
+def install_plugins(plugins)
+  logger = Vagrant::UI::Colored.new
+  result = false
+  plugins.each do |p|
+    pm = Vagrant::Plugin::Manager.new(
+      Vagrant::Plugin::Manager.user_plugins_file
+    )
+    plugin_hash = pm.installed_plugins
+    next if plugin_hash.has_key?(p)
+    result = true
+    logger.warn("Installing plugin #{p}")
+    pm.install_plugin(p)
+  end
+  if result
+    logger.warn('Re-run vagrant up now that plugins are installed')
+    exit
   end
 end
 
+project_plugins = ["vagrant-cachier","vagrant-git","vagrant-docker-compose"]
+
+install_plugins(project_plugins)
 
 Vagrant.configure(2) do |config|
   config.vm.box              = "centos/7"
