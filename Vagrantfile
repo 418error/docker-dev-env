@@ -1,10 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-require_relative "scripts/vagrant/vagrant-plugin-installer.rb"
-
+require "./vagrant-plugin-installer.rb"
 project_plugins = ["vagrant-cachier","vagrant-git","vagrant-docker-compose"]
-
 install_plugins(project_plugins)
 
 Vagrant.configure(2) do |config|
